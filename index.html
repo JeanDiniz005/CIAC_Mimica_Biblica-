@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mímica Bíblica</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gl:#f0d080;--gd:#8a6a1e;
+  --p1:#f5e9c9;--p2:#c8b87a;
+  --bg:#04090f;
+  --card:rgba(15,35,75,0.52);
+  --bdr:rgba(180,210,255,.17);
+}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--p1);overflow-x:hidden}
+
+/* SCREENS */
+.screen{display:none}
+.screen.on{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 60px}
+
+/* HEADER */
+.hdr{text-align:center;padding:24px 16px 12px}
+.hdr h1{font-family:'Cinzel',serif;font-size:clamp(1.6rem,4vw,2.5rem);font-weight:900;color:var(--gl);text-shadow:0 2px 18px rgba(201,168,76,.4);letter-spacing:4px}
+.hdr .sub{font-size:.76rem;letter-spacing:3px;text-transform:uppercase;color:var(--p2);opacity:.75;margin-top:4px}
+.hdr-line{width:44%;max-width:280px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:9px auto 0}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:20px 16px;margin-bottom:12px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(180,210,255,.18),transparent);margin:12px 0}
+
+/* BUTTONS */
+.btn{font-family:'Nunito',sans-serif;font-weight:800;letter-spacing:.8px;text-transform:uppercase;border:none;cursor:pointer;border-radius:10px;transition:all .15s;font-size:.83rem;padding:10px 16px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.96)}
+.btn-gold{background:linear-gradient(135deg,var(--gd),var(--gold));color:#04090f;box-shadow:0 4px 14px rgba(201,168,76,.28)}
+.btn-gold:hover{background:linear-gradient(135deg,var(--gold),var(--gl))}
+.btn-green{background:linear-gradient(135deg,#1a5c30,#2d8a50);color:#a0ffc0}
+.btn-red{background:linear-gradient(135deg,#5c1a1a,#8a2020);color:#ffa0a0}
+.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);color:var(--p2)}
+.btn-w{background:linear-gradient(135deg,#7a1a3a,#c04070);color:#ffe0ee}
+.btn-m{background:linear-gradient(135deg,#1a3a7a,#4070c0);color:#d0e0ff}
+.btn-lg{padding:13px 30px;font-size:.94rem}
+.btn-sm{padding:7px 12px;font-size:.76rem}
+.btn-row{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+
+/* START */
+.start-intro{max-width:500px;margin:0 auto 20px;line-height:1.8;color:var(--p2);font-size:.9rem;text-align:center}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px;margin-bottom:24px}
+.rule-card{background:rgba(180,210,255,.07);border:1px solid rgba(180,210,255,.18);border-radius:10px;padding:12px;font-size:.8rem;line-height:1.6;color:#ddeeff}
+.rule-card .ri{font-size:1.3rem;margin-bottom:5px}
+.rule-card strong{color:var(--gl);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:1px;display:block;margin-bottom:2px}
+
+/* SCOREBOARD */
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:9px;align-items:center;margin-bottom:10px}
+.tscore{background:rgba(20,55,110,.48);border:1px solid var(--bdr);border-radius:12px;padding:10px 10px;text-align:center;position:relative;overflow:hidden}
+.tscore::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.tscore.w::before{background:linear-gradient(90deg,#c94c6a,#f07090)}
+.tscore.m::before{background:linear-gradient(90deg,#4c7ac9,#70a0f0)}
+.t-pts{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:900;color:var(--gl);line-height:1}
+.t-lbl{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin:2px 0}
+.vs{text-align:center;font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold);letter-spacing:2px}
+
+/* DOTS */
+.word-ctr{text-align:center;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;color:var(--p2);opacity:.6;margin-bottom:9px}
+.word-ctr strong{color:var(--gl);font-family:'Cinzel',serif}
+.phase-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:11px}
+.pdot{width:8px;height:8px;border-radius:50%;background:rgba(180,210,255,.14);border:1px solid rgba(180,210,255,.22);transition:all .3s}
+.pdot.done{background:rgba(201,168,76,.42)}
+.pdot.cur{background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,.65)}
+
+/* TURN BADGE */
+.tbadge{display:inline-block;padding:5px 16px;border-radius:20px;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-bottom:11px}
+.tbadge.w{background:rgba(201,76,106,.16);border:1px solid rgba(201,76,106,.42);color:#f07090}
+.tbadge.m{background:rgba(76,122,201,.16);border:1px solid rgba(76,122,201,.42);color:#70a0f0}
+.tbadge.g{background:rgba(76,160,100,.16);border:1px solid rgba(76,160,100,.42);color:#80d0a0}
+
+/* CATEGORY */
+.cat-area{text-align:center;margin-bottom:11px}
+.cat-lbl{font-size:.66rem;letter-spacing:3px;text-transform:uppercase;opacity:.5;margin-bottom:6px}
+.cat-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.33);border-radius:14px;padding:8px 20px;font-family:'Cinzel',serif;font-size:.96rem;font-weight:700;color:var(--gl);letter-spacing:2px}
+
+/* ACTOR PANEL (inside main screen, modal-like) */
+.actor-panel-overlay{position:fixed;inset:0;background:rgba(0,0,10,.92);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.actor-panel{background:linear-gradient(145deg,#060e22,#0b1932);border:2px solid var(--gd);border-radius:20px;padding:24px 20px;max-width:400px;width:100%;max-height:92vh;overflow-y:auto;text-align:center}
+.a-icon{font-size:2.6rem;margin-bottom:5px}
+.a-cat{font-size:.64rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:5px}
+.a-word{font-family:'Cinzel',serif;font-size:clamp(1.7rem,5.5vw,2.4rem);font-weight:900;color:var(--gl);letter-spacing:2px;margin:6px 0 4px}
+.a-ref{font-size:.78rem;color:var(--p2);opacity:.65;font-style:italic;margin-bottom:12px}
+.a-dica{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.28);border-radius:12px;padding:12px 14px;text-align:left;margin-bottom:14px}
+.a-dica-lbl{font-size:.61rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:6px;font-weight:700}
+.a-dica-txt{font-size:.85rem;line-height:1.7;color:var(--p1);font-weight:600}
+.a-warn{font-size:.74rem;color:var(--p2);opacity:.58;margin-top:9px;line-height:1.5}
+
+/* TIMER */
+.timer-wrap{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 12px}
+.ring-wrap{position:relative;width:92px;height:92px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(180,210,255,.1);stroke-width:7}
+.ring-prog{fill:none;stroke-width:7;stroke-dasharray:283;stroke-dashoffset:0;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .4s}
+.ring-prog.ok{stroke:var(--gold)}
+.ring-prog.warn{stroke:#e07030}
+.ring-prog.danger{stroke:#c03020}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--gl)}
+.timer-btns{display:flex;flex-direction:column;gap:7px}
+
+/* RESULT */
+.result-lbl{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;opacity:.5;text-align:center;margin-bottom:7px}
+
+/* COUNTDOWN */
+.cd-overlay{position:fixed;inset:0;background:rgba(0,0,10,.88);display:flex;align-items:center;justify-content:center;z-index:400}
+.cd-num{font-family:'Cinzel',serif;font-size:clamp(7rem,22vw,12rem);font-weight:900;color:var(--gl);text-shadow:0 0 60px rgba(240,208,128,.65);animation:cdPop .8s ease forwards}
+.cd-go{font-family:'Cinzel',serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;color:#60d080;text-shadow:0 0 40px rgba(96,208,128,.65);animation:cdPop .5s ease forwards}
+@keyframes cdPop{0%{transform:scale(2.2);opacity:0}50%{transform:scale(.92);opacity:1}75%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+
+/* FLASH */
+@keyframes redFlash{0%,100%{box-shadow:inset 0 0 0 0 transparent}50%{box-shadow:inset 0 0 80px 30px rgba(200,30,30,.28)}}
+body.flashing{animation:redFlash .55s ease infinite}
+
+/* CONFETTI */
+.cpiece{position:fixed;top:-12px;border-radius:3px;animation:cfall linear forwards;z-index:500;pointer-events:none}
+@keyframes cfall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(700deg);opacity:0}}
+
+/* RANKING */
+.rank-overlay{position:fixed;inset:0;background:rgba(0,0,10,.88);display:flex;align-items:center;justify-content:center;z-index:300;animation:fadeUp .3s ease}
+.rank-card{background:linear-gradient(145deg,#060e22,#0b1932);border:2px solid var(--gd);border-radius:20px;padding:24px 20px;max-width:400px;width:92%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,20,.8);animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+.rank-card h2{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gl);text-align:center;letter-spacing:3px;margin-bottom:4px}
+.rank-sub{text-align:center;font-size:.74rem;opacity:.55;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.rank-row{display:flex;align-items:center;gap:11px;background:rgba(20,60,120,.38);border:1px solid rgba(180,210,255,.11);border-radius:10px;padding:10px 13px;margin-bottom:6px}
+.rank-pos{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:900;width:28px;text-align:center;color:var(--gold)}
+.rank-pos.p1{color:#ffd700;font-size:1.4rem}.rank-pos.p2{color:#c0c0c0}
+.rank-icon{font-size:1.25rem}.rank-name{flex:1;font-weight:700;font-size:.9rem}
+.rank-pts{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gl)}
+.bible-reveal{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 13px;margin:9px 0;text-align:center}
+.bible-reveal .br-word{font-family:'Cinzel',serif;font-size:1rem;color:var(--gl);font-weight:700;margin-bottom:2px}
+.bible-reveal .br-ref{font-size:.75rem;color:var(--p2);opacity:.62;font-style:italic}
+.last2-banner{background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.26);border-radius:10px;padding:10px;text-align:center;font-family:'Cinzel',serif;font-size:.8rem;color:var(--gold);letter-spacing:2px;margin-bottom:11px}
+
+/* FINAL */
+.final-box{text-align:center;padding:14px 0 18px}
+.final-box h2{font-family:'Cinzel',serif;font-size:clamp(1.3rem,3.5vw,1.9rem);color:var(--gl);margin-bottom:16px;letter-spacing:2px}
+.winner-crown{font-size:2.2rem;margin-bottom:5px;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.winner-txt{font-family:'Cinzel',serif;font-size:1.05rem;margin-bottom:18px}
+.verse{color:var(--p2);font-style:italic;font-size:.86rem;max-width:320px;margin:0 auto 22px;opacity:.72;line-height:1.6}
+.sum-table{width:100%;border-collapse:collapse;font-size:.79rem;margin:9px 0}
+.sum-table th{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:6px 7px;border-bottom:1px solid rgba(201,168,76,.2);text-align:left}
+.sum-table td{padding:6px 7px;border-bottom:1px solid rgba(180,210,255,.07);color:var(--p2);vertical-align:middle}
+.sum-table tr:last-child td{border-bottom:none}
+.ok-txt{color:#60d080;font-weight:700}.err-txt{color:#e06060}
+
+/* RESPONSIVE */
+@media(max-width:460px){
+  .t-pts{font-size:1.6rem}.rank-card{padding:16px 12px}.actor-panel{padding:18px 14px}.btn-row{gap:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- MAIN SCREEN -->
+<div id="scMain" class="screen on">
+
+  <!-- START PAGE -->
+  <div id="pgStart">
+    <div class="hdr">
+      <h1>✝ Mímica Bíblica ✝</h1>
+      <div class="sub">Objetos · Personagens · Momentos Sagrados</div>
+      <div class="hdr-line"></div>
+    </div>
+    <div class="wrap">
+      <p class="start-intro">Jogo de expressão corporal com temas bíblicos! Pontuação por tempo — quem acertar mais rápido ganha mais pontos!</p>
+      <div class="rules-grid">
+        <div class="rule-card"><div class="ri">👩</div><strong>Time das Mulheres</strong>Começa nas rodadas ímpares · 60 segundos</div>
+        <div class="rule-card"><div class="ri">👨</div><strong>Time dos Homens</strong>Começa nas rodadas pares · 60 segundos</div>
+        <div class="rule-card"><div class="ri">👥</div><strong>Grupo Misto</strong>Se nenhum acertar · 45 segundos · um vendado</div>
+        <div class="rule-card"><div class="ri">⏱️</div><strong>Pontuação</strong>Igual ao tempo restante quando acertar</div>
+        <div class="rule-card"><div class="ri">📱</div><strong>Palavra na tela</strong>Apenas quem vai se expressar vê a palavra na tela.</div>
+        <div class="rule-card"><div class="ri">🏆</div><strong>Ranking ao vivo</strong>Após cada rodada (oculto nas 2 últimas!)</div>
+      </div>
+      <div class="btn-row"><button class="btn btn-gold btn-lg" onclick="sndClick();startGame()">✝ Começar o Jogo ✝</button></div>
+    </div>
+  </div>
+
+  <!-- GAME PAGE -->
+  <div id="pgGame" style="display:none">
+    <div class="hdr">
+      <h1>✝ Mímica Bíblica ✝</h1>
+      <div class="hdr-line"></div>
+      <div style="margin-top:10px">
+        <button class="btn btn-ghost btn-sm" onclick="sndClick();confirmRestart()" style="font-size:.7rem;opacity:.75">🔄 Reiniciar Jogo</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="scoreboard">
+        <div class="tscore w"><div style="font-size:1.1rem">👩</div><div class="t-lbl">Mulheres</div><div class="t-pts" id="scoreW">0</div></div>
+        <div class="vs">VS</div>
+        <div class="tscore m"><div style="font-size:1.1rem">👨</div><div class="t-lbl">Homens</div><div class="t-pts" id="scoreM">0</div></div>
+      </div>
+      <div class="word-ctr">Rodada <strong id="wordNum">1</strong> de <strong>15</strong></div>
+      <div class="phase-row" id="phaseRow"></div>
+
+      <div class="card">
+        <div style="text-align:center;margin-bottom:8px">
+          <div class="tbadge w" id="turnBadge">👩 Vez das Mulheres</div>
+        </div>
+
+        <!-- category — shown after actor taps "Já vi" -->
+        <div class="cat-area" id="catArea" style="display:none">
+          <div class="cat-lbl">Categoria desta rodada</div>
+          <div class="cat-badge" id="catBadge">—</div>
+        </div>
+
+        <!-- waiting area: button to open actor panel -->
+        <div id="waitArea" style="text-align:center;padding:8px 0 4px">
+          <p style="font-size:.84rem;color:var(--p2);margin-bottom:14px;line-height:1.6">
+            Quem vai se expressar nesta rodada deve ver a palavra de forma privada.<br>
+            Toque no botão abaixo para abrir a palavra na tela.
+          </p>
+          <button class="btn btn-gold" onclick="sndClick();openActorPanel()" style="margin-bottom:8px">📱 Ver a Palavra (privado)</button>
+        </div>
+
+        <!-- timer -->
+        <div id="timerArea" style="display:none">
+          <div class="divider"></div>
+          <div class="timer-wrap">
+            <div class="ring-wrap">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle class="ring-bg" cx="46" cy="46" r="43"/>
+                <circle class="ring-prog ok" id="ringProg" cx="46" cy="46" r="43" style="stroke-dasharray:270;stroke-dashoffset:0"/>
+              </svg>
+              <div class="ring-num" id="timerNum">60</div>
+            </div>
+            <div class="timer-btns" id="timerBtns">
+              <button class="btn btn-green btn-sm" onclick="sndClick();acertou()">✅ Acertou! — Parar</button>
+              <button class="btn btn-red btn-sm" onclick="sndClick();errou()">❌ Não Acertou</button>
+            </div>
+          </div>
+          <div id="resultArea" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL PAGE -->
+  <div id="pgFinal" style="display:none">
+    <div class="hdr"><h1>✝ Fim de Jogo ✝</h1><div class="hdr-line"></div></div>
+    <div class="wrap">
+      <div class="final-box">
+        <div id="finalContent"></div>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn btn-gold btn-lg" onclick="sndClick();startGame()">🔄 Jogar Novamente</button>
+          <button class="btn btn-ghost" onclick="sndClick();goHome()">🏠 Início</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /scMain -->
+
+<!-- ACTOR PANEL OVERLAY (shown inside same screen, on the phone of the person who will express) -->
+<div id="actorOverlay" style="display:none">
+  <div class="actor-panel-overlay">
+    <div class="actor-panel" id="actorPanel">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- RANKING OVERLAY -->
+<div id="rankOverlay" style="display:none">
+  <div class="rank-overlay">
+    <div class="rank-card">
+      <div id="rankContent"></div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn btn-gold" onclick="sndClick();closeRank()">Próxima Rodada →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="cdOverlay" style="display:none">
+  <div class="cd-overlay" id="cdInner"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// WORDS (50 palavras)
+// ══════════════════════════════════════════════════════
+const ALL_WORDS=[
+  {word:"Andar sobre a água",cat:"momento",ref:"Mateus 14",icon:"🚶",dica:"Caminhe devagar como se estivesse sobre a água, comece a afundar de medo e peça socorro com os braços."},
+  {word:"Virar água em vinho",cat:"momento",ref:"João 2",icon:"🍷",dica:"Pegue um copo imaginário, cheire, prove a água, depois prove de novo e faça expressão de surpresa com o sabor."},
+  {word:"Comer a maçã proibida",cat:"momento",ref:"Gênesis 3",icon:"🍎",dica:"Faça de conta que uma cobra está te convencendo, pegue a fruta, morida e mostre expressão de culpa e medo."},
+  {word:"Subir na árvore",cat:"momento",ref:"Lucas 19",icon:"🌳",dica:"Faça-se de pessoa bem pequena tentando escalar uma árvore alta para enxergar alguém ao longe."},
+  {word:"Engolido pela baleia",cat:"momento",ref:"Jonas 1",icon:"🐋",dica:"Simule ser jogado ao mar, depois seja engolido por um peixão enorme — fique dentro da barriga fazendo cara de desespero."},
+  {word:"Pedra com estilingue",cat:"momento",ref:"1 Samuel 17",icon:"🪃",dica:"Gire o estilingue na cabeça, mire num gigante e lance a pedra — depois mostre o gigante caindo no chão."},
+  {word:"Mar se abrindo",cat:"momento",ref:"Êxodo 14",icon:"🌊",dica:"Abra os braços com força como se estivesse empurrando paredes de água para os lados, e depois caminhe pelo meio seco."},
+  {word:"Cego que enxerga",cat:"momento",ref:"João 9",icon:"👁️",dica:"Caminhe tateando tudo com os olhos fechados, alguém toca seu rosto — abra os olhos devagar com espanto."},
+  {word:"Ressuscitar",cat:"momento",ref:"João 11",icon:"⚰️",dica:"Deite no chão como morto, depois levante bem devagar, enrolado em panos imaginários, olhando ao redor confuso."},
+  {word:"Batismo no rio",cat:"momento",ref:"Mateus 3",icon:"💧",dica:"Seja mergulhado na água por alguém, saia molhado sacudindo a cabeça, depois aponte para o céu com expressão de paz."},
+  {word:"Multiplicar o pão",cat:"momento",ref:"Mateus 14",icon:"🍞",dica:"Pegue um pedaço de pão, parta ao meio, parta de novo e de novo — distribua para uma multidão enorme ao redor."},
+  {word:"Curar pessoa aleijada",cat:"momento",ref:"Atos 3",icon:"🦯",dica:"Manque ao caminhar, alguém estende a mão, você se levanta, joga a bengala fora e sai pulando de alegria."},
+  {word:"Fugir do faraó",cat:"momento",ref:"Êxodo 14",icon:"🏃",dica:"Corra desesperado olhando para trás com medo, atravesse algo enorme e suspire de alívio ao chegar do outro lado."},
+  {word:"Trombetas e muros",cat:"momento",ref:"Josué 6",icon:"📯",dica:"Sopre uma trombeta imaginária com força, dê volta ao redor, e mostre paredes desmoronando com barulho."},
+  {word:"Sonhar com escada",cat:"momento",ref:"Gênesis 28",icon:"🪜",dica:"Deite no chão, simule dormir, depois olhe admirado vendo uma escada enorme chegando ao céu com anjos subindo."},
+  {word:"Tumba vazia",cat:"momento",ref:"Mateus 28",icon:"🪨",dica:"Empurre com força uma pedra gigante para o lado, entre na tumba, olhe assustado e saia mostrando que está vazia."},
+  {word:"Orar no jardim",cat:"momento",ref:"Mateus 26",icon:"🙏",dica:"Ajoelhe-se no chão, incline a cabeça, junte as mãos e mostre expressão de angústia profunda e súplica."},
+  {word:"Atravessar o deserto",cat:"momento",ref:"Êxodo 16",icon:"🏜️",dica:"Caminhe exausto sob sol escaldante, carregue peso nos ombros, pare para beber água e continue arrastando os pés."},
+  {word:"Criar o mundo",cat:"momento",ref:"Gênesis 1",icon:"🌍",dica:"Estenda os braços e aponte para luz, água, terra, plantas, animais — tudo sendo criado do nada com gestos amplos."},
+  {word:"Anjo aparecendo",cat:"momento",ref:"Lucas 1",icon:"👼",dica:"Apareça de repente com braços abertos como asas, brilhando, e cause espanto na pessoa que está na sua frente."},
+  {word:"Noé",cat:"personagem",ref:"Gênesis 6",icon:"⛵",dica:"Construa um barco enorme martelando, depois chame animais dois a dois para entrar — patos, elefantes, leões..."},
+  {word:"Moisés",cat:"personagem",ref:"Êxodo 3",icon:"🔥",dica:"Tire a sandália com reverência, olhe para um arbusto em chamas com espanto e cubra o rosto com a mão."},
+  {word:"Davi",cat:"personagem",ref:"1 Samuel 16",icon:"🎵",dica:"Faça-se de garoto pequeno tocando harpa com delicadeza, depois dance de alegria na frente de todo mundo."},
+  {word:"Golias",cat:"personagem",ref:"1 Samuel 17",icon:"💪",dica:"Fique enorme e arrogante, bata no peito com força, grite para todos terem medo — depois caia pesado no chão."},
+  {word:"Sansão",cat:"personagem",ref:"Juízes 14",icon:"💇",dica:"Mostre cabelo longo e force os músculos levantando coisas pesadíssimas — depois deixe cortarem seu cabelo e fique fraco."},
+  {word:"Salomão",cat:"personagem",ref:"1 Reis 3",icon:"👑",dica:"Coloque uma coroa imaginária, sente-se num trono com postura de muito sábio e julgue pessoas com sabedoria."},
+  {word:"Elias",cat:"personagem",ref:"1 Reis 17",icon:"🔥",dica:"Caminhe pelo deserto com fome, um corvo imaginário traz comida — depois suba ao céu num redemoinho girando."},
+  {word:"Jonas",cat:"personagem",ref:"Jonas 1",icon:"🐋",dica:"Tente fugir num barco, seja jogado ao mar pela tripulação, engolido por um peixão e fique três dias dentro orando."},
+  {word:"João Batista",cat:"personagem",ref:"Mateus 3",icon:"🏝️",dica:"Vista roupa rústica de pelo, coma gafanhotos com repulsa, depois batize pessoas mergulhando-as no rio."},
+  {word:"Maria",cat:"personagem",ref:"Lucas 1",icon:"👶",dica:"Fique surpresa com uma mensagem do anjo, depois embale um bebê nos braços com muito amor e cuidado."},
+  {word:"José do Egito",cat:"personagem",ref:"Gênesis 37",icon:"🌈",dica:"Vista um casaco coloridíssimo com orgulho, depois seja empurrado por irmãos com inveja e caia num buraco."},
+  {word:"Rebeca",cat:"personagem",ref:"Gênesis 24",icon:"🫙",dica:"Carregue um jarro pesado, tire água do poço, ofereça ao viajante cansado e depois ao camelo com generosidade."},
+  {word:"Rute",cat:"personagem",ref:"Rute 2",icon:"🌾",dica:"Caminhe por um campo de trigo, curve-se várias vezes para apanhar espigas do chão e carregue o fardo nos braços."},
+  {word:"Ester",cat:"personagem",ref:"Ester 5",icon:"👸",dica:"Caminhe com postura de rainha mas com medo, aproxime-se do rei trêmula, e sorria de alívio quando ele estende o cetro."},
+  {word:"Pedro",cat:"personagem",ref:"Mateus 14",icon:"⚓",dica:"Lance a rede de pesca, puxe com muito esforço, depois ande sobre a água, olhe para baixo com medo e comece a afundar."},
+  {word:"Arca da Aliança",cat:"objeto",ref:"Êxodo 25",icon:"📦",dica:"Carregue com outras pessoas uma caixa enorme e sagrada em varas — ninguém pode tocá-la com as mãos diretamente."},
+  {word:"Cajado de Moisés",cat:"objeto",ref:"Êxodo 4",icon:"🪄",dica:"Carregue um bastão, jogue-o no chão e fuja de uma cobra — depois pegue de volta e use para abrir o mar."},
+  {word:"Harpa",cat:"objeto",ref:"1 Samuel 16",icon:"🎵",dica:"Segure uma harpa grande imaginária, toque as cordas com os dedos delicadamente, feche os olhos com expressão de paz."},
+  {word:"Espada de fogo",cat:"objeto",ref:"Gênesis 3",icon:"🔥",dica:"Empunhe uma espada flamejante, gire-a no ar em todas as direções como um anjo guardando uma entrada proibida."},
+  {word:"Arca de Noé",cat:"objeto",ref:"Gênesis 6",icon:"⛵",dica:"Mostre um barco enorme com três andares, abra as janelas e coloque animais entrando dois a dois por todos os lados."},
+  {word:"Tábuas de Pedra",cat:"objeto",ref:"Êxodo 31",icon:"📜",dica:"Carregue duas pedras pesadíssimas, desça uma montanha com esforço, depois quebre-as no chão com raiva e frustração."},
+  {word:"Manto do profeta",cat:"objeto",ref:"1 Reis 19",icon:"🧥",dica:"Vista um manto com cerimônia, depois tire e jogue sobre os ombros de outra pessoa passando seu poder para ela."},
+  {word:"Rede de pesca",cat:"objeto",ref:"Mateus 4",icon:"🎣",dica:"Lance uma rede enorme no mar, puxe com muita força junto com outros, o barco quase vira de tanto peixe dentro."},
+  {word:"Jarro de barro",cat:"objeto",ref:"João 2",icon:"🏺",dica:"Carregue um jarro grande e pesado, encha-o de água com cuidado, depois sirva e mostre que virou vinho."},
+  {word:"Moeda perdida",cat:"objeto",ref:"Lucas 15",icon:"🪙",dica:"Procure no chão com uma lanterna, vire tudo de cabeça para baixo, ache a moeda e comemore com toda a casa."},
+  {word:"Ovelha perdida",cat:"objeto",ref:"Lucas 15",icon:"🐑",dica:"Saia procurando uma ovelha com preocupação, encontre-a no mato presa, carregue-a nos ombros com muita alegria."},
+  {word:"Cruz",cat:"objeto",ref:"Mateus 27",icon:"✝️",dica:"Carregue uma madeira enorme e pesadíssima nos ombros, caminhe curvado, tropece, tente se levantar com dificuldade."},
+  {word:"Coroa de espinhos",cat:"objeto",ref:"Mateus 27",icon:"👑",dica:"Simule alguém colocando espinhos na sua cabeça com pressão, mostrando dor ao sentir cada espinho perfurando."},
+  {word:"Pomba branca",cat:"objeto",ref:"Gênesis 8",icon:"🕊️",dica:"Solte um pássaro ao ar, observe-o voar longe, espere ansiosamente, e comemore quando ele volta com um ramo na boca."},
+  {word:"Candeeiro",cat:"objeto",ref:"Mateus 5",icon:"🕯️",dica:"Acenda uma vela com cuidado, proteja a chama com a mão, depois levante-a bem alto para iluminar todo o ambiente."},
+];
+const catNames={objeto:"📦 Objeto",personagem:"👤 Personagem",momento:"⚡ Momento Sagrado"};
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;}
+function $(id){return document.getElementById(id);}
+function show(id){$(id).style.display='';}
+function hide(id){$(id).style.display='none';}
+function showPage(id){['pgStart','pgGame','pgFinal'].forEach(p=>$(p).style.display='none');$(id).style.display='';}
+
+// ══════════════════════════════════════════════════════
+// STATE + PERSISTÊNCIA (sessionStorage — mantém ao recarregar)
+// ══════════════════════════════════════════════════════
+let G={};
+
+function saveState(){
+  try{
+    const snap={
+      words:G.words, idx:G.idx, phase:G.phase,
+      scores:G.scores, scorer:G.scorer, history:G.history,
+      timer:G.timer,
+    };
+    sessionStorage.setItem('mbState', JSON.stringify(snap));
+    sessionStorage.setItem('mbPage', currentPage());
+  }catch(e){}
+}
+
+function currentPage(){
+  if($('pgGame').style.display!=='none') return 'pgGame';
+  if($('pgFinal').style.display!=='none') return 'pgFinal';
+  return 'pgStart';
+}
+
+function loadState(){
+  try{
+    const raw=sessionStorage.getItem('mbState');
+    const page=sessionStorage.getItem('mbPage')||'pgStart';
+    if(!raw || page==='pgStart'){initState();return;}
+    const snap=JSON.parse(raw);
+    G={
+      words:snap.words, idx:snap.idx, phase:snap.phase,
+      scores:snap.scores, scorer:snap.scorer, history:snap.history,
+      timer:snap.timer, tInt:null, running:false,
+    };
+    showPage(page);
+    if(page==='pgGame') renderRound();
+    else if(page==='pgFinal') showFinal();
+  }catch(e){initState();}
+}
+
+function initState(){
+  const picked=shuffle([...ALL_WORDS]).slice(0,15);
+  G={words:picked,idx:0,phase:'w',timer:60,tInt:null,running:false,scores:{w:0,m:0},scorer:null,history:[]};
+  sessionStorage.removeItem('mbState');
+  sessionStorage.removeItem('mbPage');
+}
+
+function cw(){return G.words[G.idx];}
+function startTeam(i){return i%2===0?'w':'m';}
+function secondTeam(i){return i%2===0?'m':'w';}
+function isLast2(){return G.idx>=13;}
+
+// ══════════════════════════════════════════════════════
+// AUDIO — efeitos sonoros apenas
+// ══════════════════════════════════════════════════════
+let AC=null, masterGain=null;
+
+function getAC(){
+  if(!AC){
+    AC=new(window.AudioContext||window.webkitAudioContext)();
+    masterGain=AC.createGain();
+    masterGain.gain.value=0.7;
+    masterGain.connect(AC.destination);
+  }
+  if(AC.state==='suspended') AC.resume();
+  return AC;
+}
+
+function tone(freq,type,start,dur,vol){
+  try{
+    const ac=getAC();
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(0,start);
+    g.gain.linearRampToValueAtTime(vol,start+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,start+dur);
+    o.connect(g); g.connect(masterGain);
+    o.start(start); o.stop(start+dur+0.05);
+  }catch(e){}
+}
+
+function sndClick(){
+  try{const ac=getAC(),t=ac.currentTime;tone(880,'sine',t,0.06,0.12);tone(1320,'sine',t+0.03,0.05,0.08);}catch(e){}
+}
+
+function sndTick(){
+  try{const ac=getAC(),t=ac.currentTime;tone(1200,'square',t,0.05,0.07);}catch(e){}
+}
+
+function sndVitoria(){
+  try{
+    const ac=getAC(),t=ac.currentTime;
+    [[523,0],[659,.12],[784,.24],[1047,.36],[1319,.52],[1047,.68],[1319,.82]].forEach(([f,d])=>{
+      tone(f,'sine',t+d,0.22,0.15);
+      tone(f*2,'triangle',t+d,0.18,0.05);
+    });
+  }catch(e){}
+}
+
+function sndDerrota(){
+  try{
+    const ac=getAC(),t=ac.currentTime;
+    [[440,0],[370,.18],[311,.36],[261,.54]].forEach(([f,d])=>{
+      tone(f,'sawtooth',t+d,0.28,0.08);
+      tone(f*0.5,'sine',t+d,0.28,0.04);
+    });
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════════════
+// GAME
+// ══════════════════════════════════════════════════════
+function goHome(){initState();saveState();showPage('pgStart');}
+
+function startGame(){
+  initState();
+  showPage('pgGame');
+  renderRound();
+}
+
+function renderRound(){
+  const w=cw(),idx=G.idx;
+  $('wordNum').textContent=idx+1;
+  $('phaseRow').innerHTML=G.words.map((_,i)=>`<div class="pdot ${i<idx?'done':i===idx?'cur':''}"></div>`).join('');
+  const tmap={w:'👩 Vez das Mulheres — 60 seg',m:'👨 Vez dos Homens — 60 seg',g:'👥 Grupo Misto — 45 seg'};
+  const tb=$('turnBadge');
+  tb.className='tbadge '+(G.phase==='g'?'g':G.phase);
+  tb.textContent=tmap[G.phase];
+  hide('catArea');
+  show('waitArea');
+  hide('timerArea');
+  hide('resultArea');
+  $('timerBtns').innerHTML=`
+    <button class="btn btn-green btn-sm" onclick="acertou()">✅ Acertou! — Parar</button>
+    <button class="btn btn-red btn-sm" onclick="errou()">❌ Não Acertou</button>`;
+  $('scoreW').textContent=G.scores.w;
+  $('scoreM').textContent=G.scores.m;
+  stopTimer();
+  G.timer=G.phase==='g'?45:60;
+  renderTimerUI();
+  saveState();
+}
+
+// ── ACTOR PANEL ──────────────────────────────────────
+function openActorPanel(){
+  const w=cw();
+  const isGroup=G.phase==='g';
+  $('actorPanel').innerHTML=`
+    <div style="font-family:'Cinzel',serif;color:var(--gold);font-size:.7rem;letter-spacing:2px;margin-bottom:14px;opacity:.7">✝ SÓ PARA QUEM VAI SE EXPRESSAR ✝</div>
+    <div class="a-icon">${w.icon}</div>
+    <div class="a-cat">${(catNames[w.cat]||w.cat).toUpperCase()}</div>
+    <div class="a-word">${w.word}</div>
+    <div class="a-ref">📖 ${w.ref}</div>
+    <div class="a-dica">
+      <div class="a-dica-lbl">💡 Como se expressar nesta rodada</div>
+      <div class="a-dica-txt">${w.dica}</div>
+    </div>
+    ${isGroup?`
+    <div style="background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.26);border-radius:10px;padding:12px;margin-bottom:12px;font-size:.81rem;line-height:1.7;color:#ddeeff;text-align:left">
+      <strong style="color:var(--gl);display:block;margin-bottom:4px;font-family:'Cinzel',serif">🎭 Rodada do Grupo Misto</strong>
+      O sorteio vai decidir se será um <strong style="color:#70a0f0">homem</strong> ou uma <strong style="color:#f07090">mulher</strong> a fazer a mímica.<br>
+      Quem for sorteado <strong style="color:var(--gl)">ficará vendado</strong> 🙈 e fará a mímica sozinho assim mesmo!<br>
+      Qualquer jogador que acertar ganha ponto para o seu time!
+    </div>
+    <div style="text-align:center;margin-bottom:12px">
+      <div style="font-size:.64rem;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:8px">🎲 Sortear quem vai mimar vendado</div>
+      <div id="sorteioBox" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.98rem;font-weight:700;color:var(--gl);background:rgba(201,168,76,.07);border:1px dashed rgba(201,168,76,.28);border-radius:10px;padding:8px 12px;margin-bottom:8px">—</div>
+      <button class="btn btn-gold btn-sm" onclick="sortear()">🎲 Sortear Agora!</button>
+    </div>`:''}
+    <div style="margin-top:10px" class="btn-row">
+      <button class="btn btn-gold" onclick="sndClick();actorDone()">✅ Já vi — Fechar e Iniciar</button>
+    </div>
+    <div class="a-warn">⚠️ Mostre esta tela apenas para quem vai se expressar. Feche antes de virar o monitor para todos!</div>`;
+  show('actorOverlay');
+}
+
+function actorDone(){
+  hide('actorOverlay');
+  const w=cw();
+  $('catBadge').textContent=catNames[w.cat]||w.cat;
+  show('catArea');
+  hide('waitArea');
+  startCountdown(()=>startTimer());
+}
+
+function sortear(){
+  const el=$('sorteioBox');if(!el)return;
+  const opts=['👩 Mulher','👨 Homem','👩 Mulher','👨 Homem'];
+  let i=0;
+  const sp=setInterval(()=>{el.textContent=opts[i++%opts.length];},120);
+  setTimeout(()=>{
+    clearInterval(sp);
+    const h=Math.random()<.5;
+    el.innerHTML=h
+      ?`👨 <strong style="color:#70a0f0">UM HOMEM</strong> faz a mímica — vendado! 🙈`
+      :`👩 <strong style="color:#f07090">UMA MULHER</strong> faz a mímica — vendada! 🙈`;
+    el.style.borderStyle='solid';el.style.borderColor='rgba(201,168,76,.5)';el.style.background='rgba(201,168,76,.13)';
+  },1400);
+}
+
+// ── COUNTDOWN ────────────────────────────────────────
+function startCountdown(cb){
+  const steps=['3','2','1','Já!'];
+  let i=0;
+  show('cdOverlay');
+  const go=()=>{
+    const isGo=steps[i]==='Já!';
+    $('cdInner').innerHTML=`<div class="${isGo?'cd-go':'cd-num'}">${steps[i]}</div>`;
+    i++;
+    if(i<steps.length) setTimeout(go,850);
+    else setTimeout(()=>{hide('cdOverlay');cb&&cb();},520);
+  };
+  go();
+}
+
+// ── TIMER ─────────────────────────────────────────────
+function startTimer(){
+  show('timerArea');
+  stopTimer();
+  G.running=true;
+  G.tInt=setInterval(()=>{
+    G.timer--;
+    renderTimerUI();
+    if(G.timer<=10 && G.timer>0) sndTick();
+    if(G.timer<=0){
+      G.timer=0;stopTimer();renderTimerUI();
+      sndDerrota();
+      $('timerBtns').innerHTML=`<span style="color:#e07030;font-size:.78rem;letter-spacing:1px">⏱ Tempo Esgotado!</span>`;
+      if(G.phase==='g'){
+        $('resultArea').innerHTML=`
+          <div class="result-lbl">Alguém acertou no último momento?</div>
+          <div class="btn-row">
+            <button class="btn btn-w" onclick="sndClick();acertoGrupo('w')">👩 Mulher acertou</button>
+            <button class="btn btn-m" onclick="sndClick();acertoGrupo('m')">👨 Homem acertou</button>
+            <button class="btn btn-red" onclick="sndClick();errou()">❌ Ninguém acertou</button>
+          </div>`;
+      } else {
+        // w ou m — mostrar opção de passar para próxima fase
+        const first=startTeam(G.idx), second=secondTeam(G.idx);
+        const nextLabel = G.phase===first
+          ? (second==='m' ? '👨 Passar para os Homens' : '👩 Passar para as Mulheres')
+          : '👥 Passar para o Grupo Misto';
+        $('resultArea').innerHTML=`
+          <div class="result-lbl">Ninguém acertou — o que fazer?</div>
+          <div class="btn-row">
+            <button class="btn btn-gold" onclick="sndClick();errou()">${nextLabel} →</button>
+          </div>`;
+      }
+      show('resultArea');
+    }
+  },1000);
+}
+
+function stopTimer(){
+  clearInterval(G.tInt);G.running=false;
+  document.body.classList.remove('flashing');
+}
+
+function renderTimerUI(){
+  const maxT=G.phase==='g'?45:60;
+  const r=43,circ=2*Math.PI*r;
+  const dash=circ*(1-G.timer/maxT);
+  const arc=$('ringProg');if(!arc)return;
+  arc.style.strokeDasharray=String(circ);
+  arc.style.strokeDashoffset=String(dash);
+  let cls='ring-prog ';
+  if(G.timer<=10){cls+='danger';document.body.classList.add('flashing');}
+  else if(G.timer<=20){cls+='warn';document.body.classList.remove('flashing');}
+  else{cls+='ok';document.body.classList.remove('flashing');}
+  arc.className=cls;
+  $('timerNum').textContent=G.timer;
+}
+
+// ── RESULTS ───────────────────────────────────────────
+function acertou(){
+  stopTimer();
+  sndVitoria();
+  if(G.phase==='g'){
+    $('timerBtns').innerHTML='';
+    $('resultArea').innerHTML=`
+      <div class="result-lbl">Qual time acertou primeiro?</div>
+      <div class="btn-row">
+        <button class="btn btn-w" onclick="sndClick();acertoGrupo('w')">👩 Mulheres acertaram!</button>
+        <button class="btn btn-m" onclick="sndClick();acertoGrupo('m')">👨 Homens acertaram!</button>
+      </div>`;
+    show('resultArea');
+  } else {
+    const pts=G.timer;
+    if(G.phase==='w') G.scores.w+=pts; else G.scores.m+=pts;
+    G.scorer=G.phase;
+    G.history.push({word:cw().word,ref:cw().ref,icon:cw().icon,scored:G.scorer,pts});
+    $('scoreW').textContent=G.scores.w;$('scoreM').textContent=G.scores.m;
+    confetti();showRank(true,pts);
+  }
+}
+
+function acertoGrupo(team){
+  const pts=G.timer;
+  if(team==='w') G.scores.w+=pts; else G.scores.m+=pts;
+  G.scorer=team;
+  G.history.push({word:cw().word,ref:cw().ref,icon:cw().icon,scored:team,pts});
+  $('scoreW').textContent=G.scores.w;$('scoreM').textContent=G.scores.m;
+  confetti();showRank(true,pts);
+}
+
+function errou(){
+  stopTimer();
+  sndDerrota();
+  const first=startTeam(G.idx),second=secondTeam(G.idx);
+  if(G.phase===first){G.phase=second;renderRound();}
+  else if(G.phase===second){G.phase='g';renderRound();}
+  else{
+    G.history.push({word:cw().word,ref:cw().ref,icon:cw().icon,scored:null,pts:0});
+    G.scorer=null;showRank(false,0);
+  }
+}
+
+// ── RANKING ───────────────────────────────────────────
+function showRank(ok,pts){
+  const last2=isLast2(),w=cw();
+  let h=`<div class="bible-reveal"><div class="br-word">${w.icon} ${w.word}</div><div class="br-ref">📖 ${w.ref}</div></div>`;
+  if(last2){
+    h+=`<div class="last2-banner">🔒 Últimas Rodadas — Ranking Oculto!</div>`;
+    h+=ok?`<p style="text-align:center;color:#60d080;font-family:'Cinzel',serif;margin-bottom:12px">✅ +${pts} pontos!</p>`:`<p style="text-align:center;color:#f07070;margin-bottom:12px">❌ Nenhum time pontuou.</p>`;
+  } else {
+    h+=`<h2>🏆 Placar</h2>`;
+    const who=G.scorer==='w'?'👩 Mulheres':G.scorer==='m'?'👨 Homens':'👥 Grupo';
+    h+=ok?`<div class="rank-sub">${who} marcou +${pts} pontos!</div>`:`<div class="rank-sub">Nenhum time pontuou nesta rodada.</div>`;
+    [{id:'w',name:'Mulheres',icon:'👩',pts:G.scores.w},{id:'m',name:'Homens',icon:'👨',pts:G.scores.m}]
+      .sort((a,b)=>b.pts-a.pts)
+      .forEach((t,i)=>{h+=`<div class="rank-row"><div class="rank-pos ${i===0?'p1':'p2'}">${['🥇','🥈'][i]}</div><div class="rank-icon">${t.icon}</div><div class="rank-name">${t.name}</div><div class="rank-pts">${t.pts} pts</div></div>`;});
+  }
+  $('rankContent').innerHTML=h;
+  show('rankOverlay');
+}
+
+function closeRank(){
+  hide('rankOverlay');
+  if(G.idx>=14){showFinal();return;}
+  G.idx++;G.phase=startTeam(G.idx);G.scorer=null;
+  saveState();
+  renderRound();
+}
+
+// ── FINAL ─────────────────────────────────────────────
+function showFinal(){
+  stopTimer();confetti();showPage('pgFinal');
+  saveState();
+  const ws=G.scores.w,ms=G.scores.m;
+  const teams=[{name:'Mulheres',icon:'👩',pts:ws},{name:'Homens',icon:'👨',pts:ms}].sort((a,b)=>b.pts-a.pts);
+  let crown=ws>ms?`<div class="winner-crown">👑</div><div class="winner-txt" style="color:#f07090">Time das Mulheres Venceu!</div>`:ms>ws?`<div class="winner-crown">👑</div><div class="winner-txt" style="color:#70a0f0">Time dos Homens Venceu!</div>`:`<div class="winner-crown">🤝</div><div class="winner-txt">Empate! Glória a Deus!</div>`;
+  const ranks=teams.map((t,i)=>`<div class="rank-row"><div class="rank-pos ${i===0?'p1':'p2'}">${['🥇','🥈'][i]}</div><div class="rank-icon">${t.icon}</div><div class="rank-name">${t.name}</div><div class="rank-pts">${t.pts} pts</div></div>`).join('');
+  const tlab={w:'<span style="color:#f07090">👩 Mulheres</span>',m:'<span style="color:#70a0f0">👨 Homens</span>',g:'<span style="color:#80d0a0">👥 Grupo</span>'};
+  const rows=G.history.map((h,i)=>`<tr><td style="opacity:.5">${i+1}</td><td>${h.icon} ${h.word}</td><td style="font-size:.69rem;opacity:.58">${h.ref}</td><td>${h.scored?`<span class="ok-txt">✅+${h.pts}</span> ${tlab[h.scored]}`:`<span class="err-txt">❌</span>`}</td></tr>`).join('');
+  $('finalContent').innerHTML=`${crown}<div style="max-width:380px;margin:0 auto 18px">${ranks}</div><div class="verse">"Sede fortes e corajosos! Não se apavorem, pois o Senhor, o seu Deus, estará com vocês." — Josué 1:9</div><div style="font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold);letter-spacing:2px;text-align:center;margin:16px 0 7px">📋 RESUMO</div><div style="overflow-x:auto"><table class="sum-table"><thead><tr><th>#</th><th>Palavra</th><th>Ref.</th><th>Resultado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function confirmRestart(){
+  if(!confirm('Tem certeza que quer reiniciar o jogo? O progresso atual será perdido.')) return;
+  stopTimer();
+  hide('rankOverlay');
+  hide('actorOverlay');
+  hide('cdOverlay');
+  startGame();
+}
+
+// ── CONFETTI ──────────────────────────────────────────
+function confetti(){
+  const cols=['#f0d080','#c9a84c','#f07090','#70a0f0','#80d0a0','#ffffff','#ffd700'];
+  for(let i=0;i<80;i++){
+    const el=document.createElement('div');
+    el.className='cpiece';
+    el.style.cssText=`left:${Math.random()*100}vw;width:${7+Math.random()*8}px;height:${9+Math.random()*9}px;background:${cols[0|Math.random()*cols.length]};animation-duration:${1.4+Math.random()*2}s;animation-delay:${Math.random()*.8}s`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3800);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────
+loadState();
+</script>
+</body>
+</html>
